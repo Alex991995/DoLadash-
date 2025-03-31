@@ -35,14 +35,14 @@ Array.prototype.newSplice = function( start, end ) {
 
 const library = {
 
-  // reduce(array, callback, initialValue) {
-  //   let acc = initialValue
+  reduce(array, callback, initialValue) {
+    let sum = initialValue
 
-  //   for (let i = 0; i < array.length; i++) {
-  //    acc += callback(array[i]) 
-  //   }
-  //   return acc
-  // },
+    for (let i = 0; i < array.length; i++) {
+      sum =  callback(sum, array[i] )
+    }
+    return sum
+  },
   
   map(array, callback) {
     const newArr = []
@@ -106,6 +106,16 @@ const library = {
         arr = newArr
         return this
       },
+
+      reduce(callback, initialValue) {
+        let sum = initialValue
+    
+        for (let i = 0; i < array.length; i++) {
+          sum =  callback(sum, array[i] )
+        }
+        arr = sum
+        return this
+      },
     
       filter(callback) {
         const newArr = []
@@ -132,7 +142,9 @@ const library = {
   }
 }
 
-
+function computeSum(acc, element) {
+  return acc + element
+}
 
 function isEven(n) {
   return n % 2 === 0 ? true : false
@@ -142,6 +154,6 @@ function multiplay(n) {
   return n * 2
 }
 
-// console.log(library.skip([1, 2, 3, 4], 3))
+// console.log(library.reduce([1, 2, 3, 4], computeSum, 0))
 
-console.log(library.chain([1, 2, 3, 4]).filter(isEven).value() )
+// console.log(library.chain([1, 2, 3, 4]).reduce(computeSum, 0).value() )
