@@ -10,7 +10,7 @@ import { arrayTake } from './src/methodWithOutChain/arrayTake.js';
 import { arraySkip } from './src/methodWithOutChain/arraySkip.js';
 
 
-// import { chaindArrayForEach } from './src/methodWithChain/chaindArrayForEach.js';
+import { chaindArrayForEach } from './src/methodWithChain/chaindArrayForEach.js';
 
  
 
@@ -49,6 +49,7 @@ const arrayLib = {
         return this;
       },
 
+      // forEach: chaindArrayForEach.bind(this, callback),
 
       forEach(callback) {
         const newArr = [];
@@ -103,3 +104,9 @@ const arrayLib = {
 
 export { arrayLib };
 
+
+function multi(n) {
+  return n * 2
+}
+
+console.log(arrayLib.chain([13,4,5,]).forEach(multi) )

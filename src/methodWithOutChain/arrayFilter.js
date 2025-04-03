@@ -8,12 +8,21 @@ const { newPush } = ArrayUtils;
  * @returns {number[]}
  */
 export function arrayFilter(array, callback) {
-  const newArr = [];
-  for (let i = 0; i < array.length; i++) {
-    const isValid = callback(array[i], i, array);
-    if (isValid) {
-      newPush(newArr, array[i]);
+  try {
+    if (!Array.isArray(array)) throw new Error('Wrong data');
+
+    const newArr = [];
+    for (let i = 0; i < array.length; i++) {
+      const isValid = callback(array[i], i, array);
+      if (isValid) {
+        newPush(newArr, array[i]);
+      }
     }
+    return newArr;
+  } 
+  
+  catch (error) {
+    return err.message;
   }
-  return newArr;
+
 }

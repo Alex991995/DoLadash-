@@ -8,6 +8,15 @@ const { newSlice } = ArrayUtils;
  * @returns {number[]}
  */
 export function arrayTake(array, n) {
-  if (n > array.length) return array;
-  return newSlice(array, 0, n);
+  try {
+
+    if (!Array.isArray(array)) throw new Error('Wrong data');
+    if (n > array.length) return array;
+    
+    return newSlice(array, 0, n);
+  } 
+  
+  catch (err) {
+    return err.message;
+  }
 }

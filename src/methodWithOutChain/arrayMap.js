@@ -9,13 +9,17 @@ const { newPush } = ArrayUtils;
 export function arrayMap(array, callback) {
   try {
     if (!Array.isArray(array)) throw new Error('Wrong data');
+
     const newArr = [];
     for (let i = 0; i < array.length; i++) {
       const result = callback(array[i], i, array);
       newPush(newArr, result);
     }
     return newArr;
-  } catch (err) {
+
+  } 
+  
+  catch (err) {
     return err.message;
   }
 }
