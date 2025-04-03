@@ -1,159 +1,105 @@
+import { ArrayUtils } from './helpers/utils.js';
+
+const { newSlice, newPush } = ArrayUtils;
+
+import { arrayMap } from './src/methodWithOutChain/arrayMap.js';
+import { arrayReduce } from './src/methodWithOutChain/arrayReduce.js';
+import { arrayForEach } from './src/methodWithOutChain/arrayForEach.js';
+import { arrayFilter } from './src/methodWithOutChain/arrayFilter.js';
+import { arrayTake } from './src/methodWithOutChain/arrayTake.js';
+import { arraySkip } from './src/methodWithOutChain/arraySkip.js';
 
 
-Array.prototype.newPush = function(element) {
-  const last = this.length
-  this[last ] = element
-}
+// import { chaindArrayForEach } from './src/methodWithChain/chaindArrayForEach.js';
 
-Array.prototype.newSlice = function( start, end ) {
-  const newArr = []
-  for (let i = start; i < end; i++) {
-    newArr.newPush(this[i] )
-    
-  }
-  return newArr
-}
+ 
 
-Array.prototype.newSplice = function( start, end ) {
-  const newArr = []
-  const lastIndex = end - 1
+const arrayLib = {
 
-  for (let i = 0; i < this.length; i++) {
-
-    if(i < start){
-      newArr.newPush(this[i] )
-    }
-    else if(i > start + lastIndex){
-      newArr.newPush(this[i] )
-    }
-    
-  }
-
-  return newArr
-}
-
-
-const library = {
-
-  reduce(array, callback, initialValue) {
-    let sum = initialValue
-
-    for (let i = 0; i < array.length; i++) {
-      sum =  callback(sum, array[i] )
-    }
-    return sum
-  },
-  
-  map(array, callback) {
-    const newArr = []
-    for (let i = 0; i < array.length; i++) {
-      newArr.newPush( callback(array[i]) )
-    }
-    return newArr
-  },
-
-  foreach(array, callback){
-    const newArr = []
-    for (let i = 0; i < array.length; i++) {
-      newArr.newPush( callback(array[i]) )
-    }
-    return newArr
-  },
-
-  filter(array, callback) {
-    const newArr = []
-    for (let i = 0; i < array.length; i++) {
-      const bool = callback(array[i])
-      if(bool) {
-        newArr.newPush(array[i])
-      }
-    }
-    return newArr
-  },
-
-  take(array, n) {
-    return array.newSlice(0, n)
-  },
-
-  skip(array, n) {
-    const result =  array.newSplice(n-1, 1)
-    return result
-  }, 
+  reduce: arrayReduce,
+  map: arrayMap,
+  forEach: arrayForEach,
+  filter: arrayFilter,
+  take: arrayTake,
+  skip: arraySkip,
 
   chain(array) {
-
-    let arr = array
+    /** @type {number[]} */
+    let arr = array;
 
     return {
-      take(n){
-        arr = arr.newSlice(0, n)
-        return this
+      take(n) {
+        try {
+          if (arr.length) {
+            arr = newSlice(arr, 0, n);
+            return this;
+          }
+          return this;
+        } catch (error) {
+          return error.message;
+        }
       },
       map(callback) {
-        const newArr = []
+        const newArr = [];
         for (let i = 0; i < arr.length; i++) {
-          newArr.newPush( callback(arr[i]) )
+          const result = callback(arr[i], i, arr);
+          newPush(newArr, result);
         }
-        arr = newArr
-        return this
+        arr = newArr;
+        return this;
       },
-    
-      foreach(callback){
-        const newArr = []
+
+
+      forEach(callback) {
+        const newArr = [];
         for (let i = 0; i < arr.length; i++) {
-          newArr.newPush( callback(arr[i]) )
+          const result = callback(arr[i], i, arr);
+          newPush(newArr, result);
         }
-        arr = newArr
-        return this
+        arr = newArr;
+        return this;
       },
 
       reduce(callback, initialValue) {
-        let sum = initialValue
-    
-        for (let i = 0; i < array.length; i++) {
-          sum =  callback(sum, array[i] )
-        }
-        arr = sum
-        return this
-      },
-    
-      filter(callback) {
-        const newArr = []
+        let sum = initialValue;
+
         for (let i = 0; i < arr.length; i++) {
-          const bool = callback(arr[i])
-          if(bool) {
-            newArr.newPush(arr[i])
+          sum = callback(sum, arr[i], i, arr);
+        }
+        arr = sum;
+        return this;
+      },
+
+      filter(callback) {
+        const newArr = [];
+        for (let i = 0; i < arr.length; i++) {
+          const isValid = callback(array[i], i, arr);
+          if (isValid) {
+            newPush(newArr, array[i]);
           }
         }
-        arr = newArr
-        return this
+        arr = newArr;
+        return this;
       },
-    
+
       skip(n) {
-        arr = arr.newSplice(n-1, 1)
-        return this
-      }, 
+        if (n === 0) return arr;
+        else if (arr.length <= n) return [];
+        const newArr = [];
+        for (let i = n; i < arr.length; i++) {
+          newPush(newArr, arr[i]);
+        }
+        arr = newArr;
+        return this;
+      },
 
       value() {
-        return arr
-      }
+        console.log(arr);
+        return arr;
+      },
+    };
+  },
+};
 
-    }
-  }
-}
+export { arrayLib };
 
-function computeSum(acc, element) {
-  return acc + element
-}
-
-function isEven(n) {
-  return n % 2 === 0 ? true : false
-}
-
-function multiplay(n) {
-  return n * 2
-}
-
-// console.log(library.reduce([1, 2, 3, 4], computeSum, 0))
-
-// console.log(library.chain([1, 2, 3, 4]).reduce(computeSum, 0).value() )
